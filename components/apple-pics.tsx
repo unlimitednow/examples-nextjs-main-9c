@@ -1,5 +1,5 @@
 import { getHome, getImages, getPornhubVideos } from "@/actions/home";
-import type { XVideosResponse, YouPornResponse, PornhubVideo, PornhubResponse, VideoData } from "@/actions/home";
+import type {XVideosResponse, YouPornResponse, PornhubVideo, PornhubResponse, VideoData}  from "@/actions/home";
 import * as React from "react";
 import { ListMusic, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -9,7 +9,7 @@ import { ScrollArea, ScrollBar } from "../components/ui/scroll-area";
 import { Separator } from "../components/ui/separator";
 import Link from "next/link";
 
-export const revalidate = 0;
+export const revalidate = 0;  
 
 async function MadeForYou() {
   const homeData: XVideosResponse | null = await getHome();
@@ -21,11 +21,11 @@ async function MadeForYou() {
   }
 
   // Extract the video data
-  const madeForYouVideos: VideoData[] = Array.isArray(homeData.data) ? homeData.data : [];
+  const madeForYouVideo: VideoData = homeData.data;
   const imageItems: string[] = imageData.assets;
   const pornhubVideos: PornhubVideo[] = pornhubData.data;
 
-  console.log('madeForYouVideos:', madeForYouVideos);
+  console.log('madeForYouVideo:', madeForYouVideo);
   console.log('imageItems:', imageItems);
   console.log('pornhubVideos:', pornhubVideos);
 
@@ -47,9 +47,8 @@ async function MadeForYou() {
               <DemoIndicator className="top-32 right-auto left-16 z-30" />
               <ScrollArea>
                 <div className="flex space-x-4 pb-4">
-                  {madeForYouVideos.map(video => (
-                    <AlbumArtwork key={video.id} video={video} className="w-[150px]" aspectRatio={1 / 1} />
-                  ))}
+                  {/* Render single video */}
+                  <AlbumArtwork video={madeForYouVideo} className="w-[150px]" aspectRatio={1 / 1} />
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
@@ -177,7 +176,6 @@ function AlbumArtwork({ video, aspectRatio = 3 / 4, className, ...props }: Album
     </div>
   );
 }
-
 const playlists = [
   "Recently Added",
   "Recently Played",
