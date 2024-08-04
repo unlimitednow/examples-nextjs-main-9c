@@ -18,14 +18,13 @@ export interface YouPornResponse {
     tags: string[];
   };
   source: string;
-  assets: string[];
+  assets: string[];  // Array of image URLs
 }
 
 // Interface for XVideos response
 export interface XVideosResponse {
   success: boolean;
   data: {
-    map: any;
     title: string;
     id: string;
     image: string;

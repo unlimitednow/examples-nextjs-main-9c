@@ -9,12 +9,9 @@ import { ScrollArea, ScrollBar } from "../components/ui/scroll-area";
 import { Separator } from "../components/ui/separator";
 import Link from "next/link";
 
-const playlists = [
-  "Recently Added",
-  "Recently Played",
-];
 
-// Define Album type
+
+// Define types for API responses
 interface Album {
   name: string;
   artist: string;
@@ -36,6 +33,7 @@ interface HomeResponse {
   }[];
 }
 
+
 async function MadeForYou() {
   const homeData: XVideosResponse | null = await getHome();
   const imageData: YouPornResponse | null = await getImages();
@@ -44,8 +42,10 @@ async function MadeForYou() {
     return <p>No data available</p>;
   }
 
-  const madeForYouAlbums: Feed[] = homeData.data.map((item: { feed: any; }) => item.feed);
-  const imageItems = imageData.assets;
+  // Ensure 'data' is an array
+  const madeForYouAlbums: Feed[] = homeData.data.map((item) => item.feed);
+  // Ensure 'assets' is an array
+  const imageItems: string[] = imageData.assets;
 
   console.log('madeForYouAlbums:', madeForYouAlbums);
   console.log('imageItems:', imageItems);
@@ -173,3 +173,7 @@ function AlbumArtwork({ album, aspectRatio = 3 / 4, className, ...props }: Album
     </div>
   );
 }
+const playlists = [
+  "Recently Added",
+  "Recently Played",
+];
