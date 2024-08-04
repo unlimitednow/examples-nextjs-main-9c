@@ -41,67 +41,64 @@ async function MadeForYou() {
   const imageData: YouPornResponse | null = await getImages();
 
   if (!homeData || !imageData) {
-    // Handle the case where there's no data
     return <p>No data available</p>;
   }
 
   const madeForYouAlbums: Feed[] = homeData.data.map((item: { feed: any; }) => item.feed);
-  const imageItems = imageData.assets; // Use the image assets from the API
+  const imageItems = imageData.assets;
 
   console.log('madeForYouAlbums:', madeForYouAlbums);
   console.log('imageItems:', imageItems);
 
   return (
-    <>
-      <div className="flex min-h-full flex-col font-sans text-zinc-900 bg-zinc-50 dark:text-zinc-100 dark:bg-black">
-        <div className="text-center">
-          {/* Header or other content here */}
-        </div>
-
-        <section>
-          <div className="max-w-screen-3xl px-4 py-8 mx-auto sm:py-12 sm:px-6 lg:px-8">
-            <section className="rounded-md bg-white dark:bg-gray-950 shadow-lg p-4">
-              <div className="mt-6 space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">Made for You</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Your personal playlists. Updated daily.</p>
-              </div>
-              <Separator className="my-4" />
-              <div className="relative">
-                <DemoIndicator className="top-32 right-auto left-16 z-30" />
-                <ScrollArea>
-                  <div className="flex space-x-4 pb-4">
-                    {madeForYouAlbums.map((album) => (
-                      <AlbumArtwork key={album.id} album={album} className="w-[150px]" aspectRatio={1 / 1} />
-                    ))}
-                  </div>
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              </div>
-
-              <Separator className="my-4" />
-              <div className="relative">
-                <h2 className="text-2xl font-semibold tracking-tight">Image Gallery</h2>
-                <ScrollArea className="mt-4">
-                  <div className="flex space-x-4 pb-4">
-                    {imageItems.map((image: string | undefined, index: React.Key | null | undefined) => (
-                      <div key={index} className="w-[150px]">
-                        <img src={image} alt={`Image ${index}`} className="object-cover transition-all hover:scale-105" />
-                      </div>
-                    ))}
-                  </div>
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              </div>
-            </section>
-
-            <div className="text-center mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
-              Cta Banner
-              {/* Additional content here */}
-            </div>
-          </div>
-        </section>
+    <div className="flex min-h-full flex-col font-sans text-zinc-900 bg-zinc-50 dark:text-zinc-100 dark:bg-black">
+      <div className="text-center">
+        {/* Header or other content here */}
       </div>
-    </>
+
+      <section>
+        <div className="max-w-screen-3xl px-4 py-8 mx-auto sm:py-12 sm:px-6 lg:px-8">
+          <section className="rounded-md bg-white dark:bg-gray-950 shadow-lg p-4">
+            <div className="mt-6 space-y-1">
+              <h2 className="text-2xl font-semibold tracking-tight">Made for You</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Your personal playlists. Updated daily.</p>
+            </div>
+            <Separator className="my-4" />
+            <div className="relative">
+              <DemoIndicator className="top-32 right-auto left-16 z-30" />
+              <ScrollArea>
+                <div className="flex space-x-4 pb-4">
+                  {madeForYouAlbums.map((album) => (
+                    <AlbumArtwork key={album.id} album={album} className="w-[150px]" aspectRatio={1 / 1} />
+                  ))}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+
+            <Separator className="my-4" />
+            <div className="relative">
+              <h2 className="text-2xl font-semibold tracking-tight">Image Gallery</h2>
+              <ScrollArea className="mt-4">
+                <div className="flex space-x-4 pb-4">
+                  {imageItems.map((image, index) => (
+                    <div key={index} className="w-[150px]">
+                      <img src={image} alt={`Image ${index}`} className="object-cover transition-all hover:scale-105" />
+                    </div>
+                  ))}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          </section>
+
+          <div className="text-center mx-auto max-w-7xl py-24 sm:px-6 sm:py-32 lg:px-8">
+            Cta Banner
+            {/* Additional content here */}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 

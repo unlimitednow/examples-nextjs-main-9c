@@ -25,7 +25,7 @@ export interface YouPornResponse {
 export interface XVideosResponse {
   success: boolean;
   data: {
-    map(arg0: (item: { feed: any; }) => any): Feed[];
+    map: any;
     title: string;
     id: string;
     image: string;
