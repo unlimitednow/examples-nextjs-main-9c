@@ -1,7 +1,4 @@
 import Image from 'next/image'
-export const experimental_ppr = true;
-export const revalidate = 300;
-
 
 export default function Home() {
   return (
