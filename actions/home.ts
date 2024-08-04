@@ -23,13 +23,14 @@ export interface VideoData {
   image: string;
   duration: string;
   views: string;
-  rating: string;
-  uploaded: string;
-  upvoted: string;
-  downvoted: string;
-  models: string[];
-  tags: string[];
+  rating?: string;
+  uploaded?: string;
+  upvoted?: string;
+  downvoted?: string;
+  models?: string[];
+  tags?: string[];
 }
+
 
 // XVideos API response structure
 export interface XVideosResponse {
