@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import ApplePics from "@/components/apple-pics"
 
 
 export default function Home() {
