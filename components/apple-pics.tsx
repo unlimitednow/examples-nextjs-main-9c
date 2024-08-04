@@ -9,7 +9,7 @@ import { ScrollArea, ScrollBar } from "../components/ui/scroll-area";
 import { Separator } from "../components/ui/separator";
 import Link from "next/link";
 
-
+export const revalidate = 3600;  
 
 async function MadeForYou() {
   const homeData: XVideosResponse | null = await getHome();
@@ -20,12 +20,12 @@ async function MadeForYou() {
     return <p>No data available</p>;
   }
 
-  // Extract the video data
-  const madeForYouVideo: VideoData = homeData.data;
+  // Ensure homeData.data is an array of VideoData
+  const madeForYouVideos: VideoData[] = Array.isArray(homeData.data) ? homeData.data : [];
   const imageItems: string[] = imageData.assets;
   const pornhubVideos: PornhubVideo[] = pornhubData.data;
 
-  console.log('madeForYouVideo:', madeForYouVideo);
+  console.log('madeForYouVideos:', madeForYouVideos);
   console.log('imageItems:', imageItems);
   console.log('pornhubVideos:', pornhubVideos);
 
@@ -43,21 +43,26 @@ async function MadeForYou() {
               <p className="text-sm text-slate-500 dark:text-slate-400">Your personal playlists. Updated daily.</p>
             </div>
             <Separator className="my-4" />
+
+            {/* Made For You Videos Scroll Area */}
             <div className="relative">
               <DemoIndicator className="top-32 right-auto left-16 z-30" />
-              <ScrollArea>
+              <ScrollArea className="overflow-x-auto">
                 <div className="flex space-x-4 pb-4">
-                  {/* Render single video */}
-                  <AlbumArtwork video={madeForYouVideo} className="w-[150px]" aspectRatio={1 / 1} />
+                  {madeForYouVideos.map(video => (
+                    <AlbumArtwork key={video.id} video={video} className="w-[150px]" aspectRatio={1 / 1} />
+                  ))}
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
             </div>
 
             <Separator className="my-4" />
+
+            {/* Image Gallery Scroll Area */}
             <div className="relative">
               <h2 className="text-2xl font-semibold tracking-tight">Image Gallery</h2>
-              <ScrollArea className="mt-4">
+              <ScrollArea className="mt-4 overflow-x-auto">
                 <div className="flex space-x-4 pb-4">
                   {imageItems.map((image, index) => (
                     <div key={index} className="w-[150px]">
@@ -70,9 +75,11 @@ async function MadeForYou() {
             </div>
 
             <Separator className="my-4" />
+
+            {/* Pornhub Videos Scroll Area */}
             <div className="relative">
               <h2 className="text-2xl font-semibold tracking-tight">Pornhub Videos</h2>
-              <ScrollArea className="mt-4">
+              <ScrollArea className="mt-4 overflow-x-auto">
                 <div className="flex space-x-4 pb-4">
                   {pornhubVideos.map((video) => (
                     <div key={video.id} className="w-[150px]">
@@ -176,6 +183,7 @@ function AlbumArtwork({ video, aspectRatio = 3 / 4, className, ...props }: Album
     </div>
   );
 }
+
 const playlists = [
   "Recently Added",
   "Recently Played",
