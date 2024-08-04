@@ -1,5 +1,5 @@
-import { getHome, getImages } from "@/actions/home";
-import type {XVideosResponse, YouPornResponse, VideoData}  from "@/actions/home";
+import { getHome, getImages, getPornhubVideos } from "@/actions/home";
+import type {XVideosResponse, YouPornResponse, PornhubVideo, PornhubResponse, VideoData}  from "@/actions/home";
 import * as React from "react";
 import { ListMusic, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -14,17 +14,20 @@ import Link from "next/link";
 async function MadeForYou() {
   const homeData: XVideosResponse | null = await getHome();
   const imageData: YouPornResponse | null = await getImages();
+  const pornhubData: PornhubResponse | null = await getPornhubVideos();
 
-  if (!homeData || !imageData) {
+  if (!homeData || !imageData || !pornhubData) {
     return <p>No data available</p>;
   }
 
   // Extract the video data
   const madeForYouVideo: VideoData = homeData.data;
   const imageItems: string[] = imageData.assets;
+  const pornhubVideos: PornhubVideo[] = pornhubData.data;
 
   console.log('madeForYouVideo:', madeForYouVideo);
   console.log('imageItems:', imageItems);
+  console.log('pornhubVideos:', pornhubVideos);
 
   return (
     <div className="flex min-h-full flex-col font-sans text-zinc-900 bg-zinc-50 dark:text-zinc-100 dark:bg-black">
@@ -59,6 +62,31 @@ async function MadeForYou() {
                   {imageItems.map((image, index) => (
                     <div key={index} className="w-[150px]">
                       <img src={image} alt={`Image ${index}`} className="object-cover transition-all hover:scale-105" />
+                    </div>
+                  ))}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+
+            <Separator className="my-4" />
+            <div className="relative">
+              <h2 className="text-2xl font-semibold tracking-tight">Pornhub Videos</h2>
+              <ScrollArea className="mt-4">
+                <div className="flex space-x-4 pb-4">
+                  {pornhubVideos.map((video) => (
+                    <div key={video.id} className="w-[150px]">
+                      <Link href={video.link} passHref>
+                        <a target="_blank">
+                          <AspectRatio ratio={1 / 1} className="overflow-hidden rounded-md">
+                            <img src={video.image} alt={video.title} className="object-cover transition-all hover:scale-105" />
+                          </AspectRatio>
+                          <div className="space-y-1 text-sm mt-2">
+                            <h3 className="font-medium leading-none">{video.title}</h3>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">{video.duration} - {video.views}</p>
+                          </div>
+                        </a>
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -124,7 +152,6 @@ function AlbumArtwork({ video, aspectRatio = 3 / 4, className, ...props }: Album
                   New Playlist
                 </ContextMenuItem>
                 <ContextMenuSeparator />
-                {/* Sample playlists */}
                 {playlists.map((playlist) => (
                   <ContextMenuItem key={playlist}>
                     <ListMusic className="mr-2 h-4 w-4" /> {playlist}
@@ -144,9 +171,7 @@ function AlbumArtwork({ video, aspectRatio = 3 / 4, className, ...props }: Album
       </Link>
       <div className="space-y-1 text-sm">
         <h3 className="font-medium leading-none">{video.title}</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          {/* Display additional information if needed */}
-        </p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">{video.title}</p>
       </div>
     </div>
   );

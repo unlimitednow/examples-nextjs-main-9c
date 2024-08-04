@@ -1,5 +1,22 @@
 "use server";
 import { NextApiRequest, NextApiResponse } from "next";
+// Define the structure of a single Pornhub video
+export interface PornhubVideo {
+  link: string;
+  id: string;
+  title: string;
+  image: string;
+  duration: string;
+  views: string;
+  video: string;
+}
+
+// Pornhub API response structure
+export interface PornhubResponse {
+  success: boolean;
+  data: PornhubVideo[];
+}
+
 export interface VideoData {
   title: string;
   id: string;
@@ -55,6 +72,20 @@ export async function getImages(): Promise<YouPornResponse | null> {
     return data || null;
   } catch (error) {
     console.error('Error fetching images data:', error);
+    return null;
+  }
+}
+export async function getPornhubVideos(): Promise<PornhubResponse | null> {
+  try {
+    const response = await fetch('https://lust.scathach.id/pornhub/search?key=ebony');
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Pornhub data: ${response.statusText}`);
+    }
+    const data: PornhubResponse = await response.json();
+    console.log('pornhubData:', data);
+    return data || null;
+  } catch (error) {
+    console.error('Error fetching Pornhub data:', error);
     return null;
   }
 }
