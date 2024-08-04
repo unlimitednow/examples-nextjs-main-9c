@@ -1,80 +1,60 @@
 "use server";
 import { NextApiRequest, NextApiResponse } from "next";
-
-// Interface for YouPorn response
-export interface YouPornResponse {
-  success: boolean;
-  data: {
-    title: string;
-    id: string;
-    image: string;
-    duration: string;
-    views: string;
-    rating: string;
-    uploaded: string;
-    upvoted: string;
-    downvoted: string;
-    models: string[];
-    tags: string[];
-  };
-  source: string;
-  assets: string[];  // Array of image URLs
+export interface VideoData {
+  title: string;
+  id: string;
+  image: string;
+  duration: string;
+  views: string;
+  rating: string;
+  uploaded: string;
+  upvoted: string;
+  downvoted: string;
+  models: string[];
+  tags: string[];
 }
 
-// Interface for XVideos response
+// XVideos API response structure
 export interface XVideosResponse {
   success: boolean;
-  data: {
-    title: string;
-    id: string;
-    image: string;
-    duration: string;
-    views: string;
-    rating: string;
-    uploaded: string;
-    upvoted: string;
-    downvoted: string;
-    models: string[];
-    tags: string[];
-  };
+  data: VideoData;
   source: string;
   assets: string[];
 }
 
-// Function to fetch data from YouPorn API
-export async function getImages(): Promise<YouPornResponse | null> {
+// YouPorn API response structure
+export interface YouPornResponse {
+  success: boolean;
+  data: VideoData;
+  source: string;
+  assets: string[];
+}
+export async function getHome(): Promise<XVideosResponse | null> {
   try {
-    const response = await fetch('https://lust.scathach.id/youporn/random', { next: { revalidate: 60 } });
-
+    const response = await fetch('https://lust.scathach.id/xvideos/random');
     if (!response.ok) {
-      throw new Error(`Failed to fetch image data: ${response.statusText}`);
+      throw new Error(`Failed to fetch home data: ${response.statusText}`);
     }
-
-    const data: YouPornResponse = await response.json();
-    console.log('Image data:', data);
+    const data: XVideosResponse = await response.json();
+    console.log('xvideosData:', data);
     return data || null;
-
   } catch (error) {
-    console.error('Error fetching image data:', error);
+    console.error('Error fetching home data:', error);
     return null;
   }
 }
 
-// Function to fetch data from XVideos API
-export async function getHome(): Promise<XVideosResponse | null> {
+export async function getImages(): Promise<YouPornResponse | null> {
   try {
-    const response = await fetch('https://lust.scathach.id/xvideos/random');
-
+    const response = await fetch('https://lust.scathach.id/youporn/random', { next: { revalidate: 60 } });
     if (!response.ok) {
-      throw new Error(`Failed to fetch home data: ${response.statusText}`);
+      throw new Error(`Failed to fetch images data: ${response.statusText}`);
     }
-
-    const data: XVideosResponse = await response.json();
-    console.log('Home data:', data);
+    const data: YouPornResponse = await response.json();
+    console.log('youpornData:', data);
     return data || null;
-
   } catch (error) {
-    console.error('Error fetching home data:', error);
+    console.error('Error fetching images data:', error);
     return null;
   }
 }

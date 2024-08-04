@@ -1,5 +1,5 @@
 import { getHome, getImages } from "@/actions/home";
-import type {XVideosResponse, YouPornResponse}  from "@/actions/home";
+import type {XVideosResponse, YouPornResponse, VideoData}  from "@/actions/home";
 import * as React from "react";
 import { ListMusic, PlusCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -11,29 +11,6 @@ import Link from "next/link";
 
 
 
-// Define types for API responses
-interface Album {
-  name: string;
-  artist: string;
-  cover: string;
-  id: number;
-}
-
-interface Feed {
-  id: number;
-  name: string;
-  artist: string;
-  cover: string;
-}
-
-interface HomeResponse {
-  data: {
-    feed: Feed;
-    id: number;
-  }[];
-}
-
-
 async function MadeForYou() {
   const homeData: XVideosResponse | null = await getHome();
   const imageData: YouPornResponse | null = await getImages();
@@ -42,12 +19,11 @@ async function MadeForYou() {
     return <p>No data available</p>;
   }
 
-  // Ensure 'data' is an array
-  const madeForYouAlbums: Feed[] = homeData.data.map((item) => item.feed);
-  // Ensure 'assets' is an array
+  // Extract the video data
+  const madeForYouVideo: VideoData = homeData.data;
   const imageItems: string[] = imageData.assets;
 
-  console.log('madeForYouAlbums:', madeForYouAlbums);
+  console.log('madeForYouVideo:', madeForYouVideo);
   console.log('imageItems:', imageItems);
 
   return (
@@ -68,9 +44,8 @@ async function MadeForYou() {
               <DemoIndicator className="top-32 right-auto left-16 z-30" />
               <ScrollArea>
                 <div className="flex space-x-4 pb-4">
-                  {madeForYouAlbums.map((album) => (
-                    <AlbumArtwork key={album.id} album={album} className="w-[150px]" aspectRatio={1 / 1} />
-                  ))}
+                  {/* Render single video */}
+                  <AlbumArtwork video={madeForYouVideo} className="w-[150px]" aspectRatio={1 / 1} />
                 </div>
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
@@ -116,26 +91,26 @@ export function DemoIndicator({ className }: DemoIndicatorProps) {
 }
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  album: Album;
+  video: VideoData; // Single VideoData object
   aspectRatio?: number;
 }
 
-function AlbumArtwork({ album, aspectRatio = 3 / 4, className, ...props }: AlbumArtworkProps) {
-  const isVideo = album.cover.endsWith('.mp4');
+function AlbumArtwork({ video, aspectRatio = 3 / 4, className, ...props }: AlbumArtworkProps) {
+  const isVideo = video.image.endsWith('.mp4');
 
   return (
     <div className={cn("space-y-3", className)} {...props}>
-      <Link as={`/dashboard/p/${album.id}`} href={`/dashboard/p/${album.id}`}>
+      <Link as={`/dashboard/p/${video.id}`} href={`/dashboard/p/${video.id}`}>
         <ContextMenu>
           <ContextMenuTrigger>
             <AspectRatio ratio={aspectRatio} className="overflow-hidden rounded-md">
               {isVideo ? (
                 <video controls className="object-cover transition-all hover:scale-105" autoPlay muted loop>
-                  <source src={album.cover} type="video/mp4" />
+                  <source src={video.image} type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
               ) : (
-                <img src={album.cover} alt={album.name} className="object-cover transition-all hover:scale-105" />
+                <img src={video.image} alt={video.title} className="object-cover transition-all hover:scale-105" />
               )}
             </AspectRatio>
           </ContextMenuTrigger>
@@ -149,6 +124,7 @@ function AlbumArtwork({ album, aspectRatio = 3 / 4, className, ...props }: Album
                   New Playlist
                 </ContextMenuItem>
                 <ContextMenuSeparator />
+                {/* Sample playlists */}
                 {playlists.map((playlist) => (
                   <ContextMenuItem key={playlist}>
                     <ListMusic className="mr-2 h-4 w-4" /> {playlist}
@@ -167,8 +143,10 @@ function AlbumArtwork({ album, aspectRatio = 3 / 4, className, ...props }: Album
         </ContextMenu>
       </Link>
       <div className="space-y-1 text-sm">
-        <h3 className="font-medium leading-none">{album.name}</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400">{album.artist}</p>
+        <h3 className="font-medium leading-none">{video.title}</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400">
+          {/* Display additional information if needed */}
+        </p>
       </div>
     </div>
   );
